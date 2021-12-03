@@ -22,6 +22,9 @@ namespace WPF8
     /// </summary>
     public partial class MainWindow : Window
     {
+
+        private bool saved = true;
+
         public MainWindow()
         {
             InitializeComponent();
@@ -76,11 +79,14 @@ namespace WPF8
 
         private void OpenExecuted(object sender, ExecutedRoutedEventArgs e)
         {
-            OpenFileDialog openFileDialog = new OpenFileDialog();
-            openFileDialog.Filter = "Текст (*.txt)|*.txt";
-            if (openFileDialog.ShowDialog() == true)
+            if (EditorSavedOrIgnoreNotSavedText())
             {
-                textBox.Text = File.ReadAllText(openFileDialog.FileName);
+                OpenFileDialog openFileDialog = new OpenFileDialog();
+                openFileDialog.Filter = "Текст (*.txt)|*.txt";
+                if (openFileDialog.ShowDialog() == true)
+                {
+                    textBox.Text = File.ReadAllText(openFileDialog.FileName);
+                }
             }
         }
 
@@ -91,13 +97,38 @@ namespace WPF8
             if (saveFileDialog.ShowDialog() == true)
             {
                 File.WriteAllText(saveFileDialog.FileName, textBox.Text);
+                saved = true;
             }
         }
 
 
         private void CloseExecuted(object sender, ExecutedRoutedEventArgs e)
         {
-            Application.Current.Shutdown();
+            Close();
+        }
+
+        private void SaveCanExec(object sender, CanExecuteRoutedEventArgs e)
+        {
+            e.CanExecute = textBox.Text.Length > 0;
+        }
+
+        private void textBox_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            saved = false;
+        }
+
+        private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            e.Cancel = !EditorSavedOrIgnoreNotSavedText("выйти");
+        }
+        private bool EditorSavedOrIgnoreNotSavedText(string action = "продолжить")
+        { //проверка текст сохранен или запросить игнор сохранения текста
+            bool status = true;
+            if (textBox.Text.Length > 0 && !saved)
+            {
+                status = MessageBox.Show($"Текст в редакторе не сохранен, {action}?", "Текст не сохранен", MessageBoxButton.YesNoCancel, MessageBoxImage.Question) == MessageBoxResult.Yes;
+            }
+            return status;
         }
     }
 }
