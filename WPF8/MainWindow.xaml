@@ -10,11 +10,8 @@
         <CommandBinding Command="Open" Executed="OpenExecuted" />
         <CommandBinding Command="Save" Executed="SaveExecuted" />
         <CommandBinding Command="Close" Executed="CloseExecuted" />
-
-
     </Window.CommandBindings>
     <Grid>
-
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
@@ -27,15 +24,11 @@
                 <Separator/>
                 <MenuItem Header="_Выход" Command="Close"/>
             </MenuItem>
-
         </Menu>
         <ToolBarTray Grid.Row="1">
             <ToolBar>
                 <ComboBox Padding="8" SelectedIndex="0" Width="170" SelectionChanged="ComboBox_SelectionChanged" ItemsSource="{StaticResource FontsList}"/>
-
                 <ComboBox Padding="8" SelectedIndex="0" Width="50" SelectionChanged="ComboBox_SelectionChanged_1" ItemsSource="{StaticResource SizeList}"/>
-
-
             </ToolBar>
             <ToolBar Padding="5">
                 <Button Click="Button_Click" >
